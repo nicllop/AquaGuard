@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="10">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        @font-face {
+            font-family: "titleFont";
+            src: url('/home/nana/Documents/rpiWebServer/templates/fuente/Gatile.otf') format('opentype');
+        }
+ 
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('/home/nana/Documents/rpiWebServer/templates/fuente/fondo.webp') center/cover no-repeat fixed;
+            font-family: 'font', sans-serif;
+        }
+ 
+        .top-container {
+            background-color: #001f3f;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+ 
+        .top-container h1 {
+            font-family: "titleFont", sans-serif;
+            font-size: 8em;
+            margin: 0;
+            padding: 0;
+        }
+ 
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+ 
+        nav li {
+            margin-right: 20px;
+        }
+       nav a {
+            text-decoration: none;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+ 
+        nav a:hover {
+            background-color: lightblue;
+            color: #001f3f;
+        }
+ 
+        .content-container {
+            background-color: rgba(173, 216, 230, 0.8);
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+        }
+ 
+        .measurement {
+            margin-bottom: 20px;
+        }
+ 
+        .measurement h3 {
+            font-size: 2em;
+            color: #333;
+        }
+ 
+        .measurement .value {
+            font-size: 2.5em;
+            color: black;
+        }
+ 
+        .bottom-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #001f3f;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            z-index: 0;
+        }
+ 
+        .bottom-container ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+ 
+        .bottom-container li {
+            margin-right: 20px;
+        }
+ 
+        .bottom-container a {
+            text-decoration: none;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+ 
+    <div class = "general">
+        <div class="top-container">
+            <h1> AquaGuard </h1>
+            <nav>
+                <ul>
+                    <li><a href="https://www.bilbao.eus/cs/Satellite?c=Page&cid=3000094210&language=es&pageid=3000094210&pagename=Bilbaonet%2FPage%2FBIO_ListadoServicios#aB3">Activities to do </a></li>
+                    <li><a href="https://maps.app.goo.gl/RpdHA2NynBW592qNA">Our location</a></li>
+                    <li><a href="https://www.eltiempo.es/bilbao.html">Local weather forecast</a></li>
+ 
+                </ul>
+            </nav>
+        </div>
+ 
+        <div class="content-container">
+	    
+           <div class="vertical-measurements">
+               <p>Time: {{ time }}</p>
+                <div class="measurement">
+                    <h3>Water Temperature:</h3>
+                    <p class="value">{{ temperature }}º</p>
+                </div>
+                <div class="measurement">
+                    <h3>Humidity sensor at the exterior:</h3>
+                    <p class="value">{{ humidity }}%</p>
+                </div>
+                <div class="measurement">
+                    <h3>Moisture sensor(for water)</h3>
+                    <p class="value">{{ soil_condition }} </p>
+                </div>
+        <canvas id="myChart" width="200" height="50"></canvas>
+        </div>
+ 
+           <div class="additional-measurements">
+               <h2>Additional API Measurements:</h2>
+               <p>Current visibility: {{visibility}}%</p>
+               <p>Temperatutre sensation: {{temp_sensation}}º</p>
+               <p>Wind speed: {{wind_speed}}km/h</p>
+           </div>
+            <br><br><br>
+        </div>
+ 
+        <div class="bottom-container">
+ 
+            <ul>
+                <li>Authors:</li>
+                <li><a href="mailto:a.hernandez@opendeusto.es">Aitor Hernandez: a.hernandez@opendeusto.es</a></li>
+                <li><a href="mailto:nicllop@opendeusto.es">Nicolás Llop: nicllop@opendesuto.es</a></li>
+            </ul>
+        </div>
+    </div>
+ 
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        var data_temp = {{datos}}
+        var data = data_temp.map(Number);
+        
+        var ctx = document.getElementById('myChart').getContext('2d');
+ 
+        
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: data.length }, (_, i) => i + 1),
+                datasets: [{
+                    label: 'Temperarture',
+                    data: data,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom'
+                    },
+                    y: {
+                        min: Math.min(data),
+                        max: Math.max(data),
+                        stepSize: 5
+                    }
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
